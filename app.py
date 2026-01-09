@@ -12,10 +12,11 @@ SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
 ]
 
-creds = Credentials.from_service_account_file(
-    "service_account.json",
+creds = Credentials.from_service_account_info(
+    st.secrets["google_service_account"],
     scopes=SCOPES
 )
+
 client = gspread.authorize(creds)
 
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/19Qy8jp5wmRYH3KJpfslknXSfMlHYm4Wgf9YE4Va5cHM/edit"
