@@ -119,9 +119,9 @@ def generate_ai_coaching(emp_profile, recent_interviews):
 # 6. Streamlit UI
 # =========================
 st.set_page_config(page_title="AI 면담 코치", layout="wide")
-st.title("🧭 AI 기반 관리자 1:1 면담 코치")
+st.title("AI코치와 함께하는 1on1 면담")
 
-manager_id = st.text_input("관리자 ID를 입력하세요 (예: 1)")
+manager_id = st.text_input("관리자 ID를 입력하세요 (예: 1 or 2)")
 
 if not manager_id:
     st.stop()
@@ -149,7 +149,7 @@ st.table(emp_profile)
 # =========================
 # 9. 면담 기록
 # =========================
-st.subheader("🗂 기존 면담 기록")
+st.subheader("기존 면담 기록")
 
 emp_interviews = (
     interview_df[
