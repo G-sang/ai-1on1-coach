@@ -12,11 +12,14 @@ SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
 ]
 
+import json
+
+creds_dict = json.loads(st.secrets["GOOGLE_SERVICE_ACCOUNT"])
+
 creds = Credentials.from_service_account_info(
-    st.secrets["GOOGLE_SERVICE_ACCOUNT"],
+    creds_dict,
     scopes=SCOPES
 )
-
 
 
 
