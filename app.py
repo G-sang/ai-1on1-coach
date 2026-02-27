@@ -12,8 +12,12 @@ SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
 ]
 
+creds_dict = dict(st.secrets["GOOGLE_SERVICE_ACCOUNT"])
+
+creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
+
 creds = Credentials.from_service_account_info(
-    st.secrets["GOOGLE_SERVICE_ACCOUNT"],
+    creds_dict,
     scopes=SCOPES
 )
 
