@@ -43,8 +43,9 @@ html, body, [data-testid="stAppViewContainer"] {
     align-items: center;
     gap: 14px;
     margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
+    padding: 1rem 0 1.5rem;
     border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-wrap: wrap;
 }
 .app-logo {
     width: 40px; height: 40px;
@@ -56,18 +57,20 @@ html, body, [data-testid="stAppViewContainer"] {
 }
 .app-title-block {}
 .app-title {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     letter-spacing: -0.02em;
     color: #fff;
     margin: 0;
+    white-space: nowrap;
 }
 .app-subtitle {
-    font-size: 11px;
+    font-size: 10px;
     color: #5a6480;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    margin: 0;
+    margin: 2px 0 0;
+    white-space: nowrap;
 }
  
 /* ── 섹션 레이블 ── */
@@ -246,11 +249,45 @@ hr { border-color: rgba(255,255,255,0.06) !important; }
     border-radius: 8px !important;
 }
  
-/* selectbox 드롭다운 */
+/* selectbox 드롭다운 — 선택 박스 */
 [data-testid="stSelectbox"] > div > div {
     background: #0d1117 !important;
     border: 1px solid rgba(255,255,255,0.08) !important;
     border-radius: 8px !important;
+    color: #dde2f0 !important;
+}
+ 
+/* selectbox 팝업 리스트 전체 */
+[data-baseweb="popover"],
+[data-baseweb="menu"],
+ul[data-baseweb="menu"],
+[data-baseweb="select"] ul {
+    background: #0d1117 !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6) !important;
+}
+ 
+/* 팝업 각 항목 */
+[data-baseweb="menu"] li,
+[role="option"] {
+    background: #0d1117 !important;
+    color: #dde2f0 !important;
+    font-family: 'Noto Sans KR', sans-serif !important;
+    font-size: 13px !important;
+}
+ 
+/* 호버 */
+[data-baseweb="menu"] li:hover,
+[role="option"]:hover {
+    background: rgba(61,127,255,0.12) !important;
+    color: #fff !important;
+}
+ 
+/* 선택된 항목 */
+[aria-selected="true"] {
+    background: rgba(61,127,255,0.2) !important;
+    color: #3d7fff !important;
 }
  
 /* spinner */
@@ -408,8 +445,20 @@ except Exception as e:
 #  사이드바 — 관리자 로그인 + 직원 선택
 # ─────────────────────────────────────────
 with st.sidebar:
+    # 모바일 안내 배너
     st.markdown("""
-    <div style="margin-bottom:24px;">
+    <div style="margin-bottom:20px;padding:10px 12px;
+                background:rgba(0,200,224,0.07);
+                border:1px solid rgba(0,200,224,0.15);
+                border-radius:8px;font-size:11px;
+                color:#5a8090;line-height:1.6;">
+        📱 모바일이라면 화면 왼쪽 상단<br>
+        <b style="color:#00c8e0;">＞</b> 버튼을 눌러 메뉴를 여세요
+    </div>
+    """, unsafe_allow_html=True)
+ 
+    st.markdown("""
+    <div style="margin-bottom:16px;">
         <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;
                     text-transform:uppercase;color:#3d7fff;margin-bottom:12px;">
             관리자 접속
@@ -425,10 +474,12 @@ with st.sidebar:
  
     if not manager_id:
         st.markdown("""
-        <div style="margin-top:20px;padding:14px;background:rgba(61,127,255,0.06);
+        <div style="margin-top:12px;padding:14px;background:rgba(61,127,255,0.06);
                     border:1px solid rgba(61,127,255,0.15);border-radius:8px;
-                    font-size:12px;color:#5a6480;line-height:1.6;">
-            관리자 ID를 입력하면<br>담당 직원 목록이 나타납니다.
+                    font-size:12px;color:#5a6480;line-height:1.7;">
+            위 칸에 <b style="color:#3d7fff;">관리자 사번</b>을 입력하면<br>
+            담당 직원 목록이 나타납니다.<br><br>
+            <span style="color:#3a4560;font-size:11px;">예) 1, 2, 3 ...</span>
         </div>
         """, unsafe_allow_html=True)
         st.stop()
