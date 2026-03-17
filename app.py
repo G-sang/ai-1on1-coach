@@ -6,310 +6,271 @@ from openai import OpenAI
 from datetime import datetime
  
 # ─────────────────────────────────────────
-#  커스텀 CSS — 다크 모드 세련된 UI
+#  테마 상태 초기화
 # ─────────────────────────────────────────
-st.markdown("""
+if "dark_mode" not in st.session_state:
+    st.session_state.dark_mode = False
+ 
+def apply_theme(dark: bool):
+    if dark:
+        # ── 다크 팔레트 ──
+        bg       = "#080c14"
+        bg2      = "#0d1117"
+        bg3      = "#131920"
+        sidebar  = "#0d1117"
+        border   = "rgba(255,255,255,0.07)"
+        border2  = "rgba(255,255,255,0.04)"
+        txt      = "#dde2f0"
+        txt2     = "#0f172a"   # 실제 사용 안 함
+        txt_dim  = "#5a6480"
+        txt_body = "#b0bcd4"
+        accent   = "#3d7fff"
+        accent2  = "#00c8e0"
+        card_bg  = "#0d1117"
+        item_bg  = "#131920"
+        coaching_bg     = "linear-gradient(135deg,#0d1117,#111a2e)"
+        coaching_border = "rgba(61,127,255,0.2)"
+        coaching_shadow = "0 0 40px rgba(61,127,255,0.05)"
+        section_div     = "rgba(255,255,255,0.05)"
+        input_bg        = "#0d1117"
+        input_border    = "rgba(255,255,255,0.08)"
+        input_txt       = "#dde2f0"
+        sidebar_input   = "#0d1117"
+        pop_bg          = "#0d1117"
+        pop_border      = "rgba(255,255,255,0.1)"
+        pop_shadow      = "0 8px 32px rgba(0,0,0,0.6)"
+        pop_txt         = "#dde2f0"
+        pop_hover_bg    = "rgba(61,127,255,0.12)"
+        pop_hover_txt   = "#ffffff"
+        pop_sel_bg      = "rgba(61,127,255,0.2)"
+        pop_sel_txt     = "#3d7fff"
+        exp_bg          = "#0d1117"
+        exp_border      = "rgba(255,255,255,0.06)"
+        success_bg      = "rgba(0,212,138,0.08)"
+        success_border  = "rgba(0,212,138,0.2)"
+        warn_bg         = "rgba(240,165,0,0.08)"
+        warn_border     = "rgba(240,165,0,0.2)"
+        lbl_color       = "#4a5570"
+        header_border   = "rgba(255,255,255,0.06)"
+        hr_color        = "rgba(255,255,255,0.06)"
+        prof_key        = "#4a5570"
+        prof_val        = "#dde2f0"
+        btn_grad        = "linear-gradient(135deg,#3d7fff,#2563eb)"
+        btn_shadow      = "0 4px 12px rgba(61,127,255,0.3)"
+        toggle_icon     = "☀️"
+        toggle_label    = "라이트 모드"
+    else:
+        # ── 라이트 팔레트 ──
+        bg       = "#f4f6fb"
+        bg2      = "#ffffff"
+        bg3      = "#f8faff"
+        sidebar  = "#ffffff"
+        border   = "#e2e6f0"
+        border2  = "#e8ecf4"
+        txt      = "#1a2036"
+        txt2     = "#0f172a"
+        txt_dim  = "#94a3b8"
+        txt_body = "#334155"
+        accent   = "#2563eb"
+        accent2  = "#0ea5e9"
+        card_bg  = "#ffffff"
+        item_bg  = "#f8faff"
+        coaching_bg     = "#ffffff"
+        coaching_border = "#dbeafe"
+        coaching_shadow = "0 4px 20px rgba(37,99,235,0.08)"
+        section_div     = "#f1f5f9"
+        input_bg        = "#ffffff"
+        input_border    = "#d1d9f0"
+        input_txt       = "#0f172a"
+        sidebar_input   = "#f8faff"
+        pop_bg          = "#ffffff"
+        pop_border      = "#e2e6f0"
+        pop_shadow      = "0 8px 32px rgba(0,0,0,0.12)"
+        pop_txt         = "#1a2036"
+        pop_hover_bg    = "#eff4ff"
+        pop_hover_txt   = "#2563eb"
+        pop_sel_bg      = "#dbeafe"
+        pop_sel_txt     = "#1d4ed8"
+        exp_bg          = "#ffffff"
+        exp_border      = "#e8ecf4"
+        success_bg      = "#f0fdf4"
+        success_border  = "#86efac"
+        warn_bg         = "#fffbeb"
+        warn_border     = "#fcd34d"
+        lbl_color       = "#64748b"
+        header_border   = "#e8ecf4"
+        hr_color        = "#e8ecf4"
+        prof_key        = "#94a3b8"
+        prof_val        = "#0f172a"
+        btn_grad        = "linear-gradient(135deg,#2563eb,#0ea5e9)"
+        btn_shadow      = "0 4px 12px rgba(37,99,235,0.25)"
+        toggle_icon     = "🌙"
+        toggle_label    = "다크 모드"
+ 
+    st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap');
  
-/* 전체 배경 */
-html, body, [data-testid="stAppViewContainer"] {
-    background-color: #080c14 !important;
+html, body, [data-testid="stAppViewContainer"] {{
+    background-color: {bg} !important;
     font-family: 'Noto Sans KR', sans-serif !important;
-}
+}}
+[data-testid="stHeader"] {{
+    background-color: {bg} !important;
+    border-bottom: 1px solid {border} !important;
+}}
+[data-testid="stSidebar"] {{
+    background-color: {sidebar} !important;
+    border-right: 1px solid {border} !important;
+}}
+.block-container {{ padding: 2rem 2.5rem !important; max-width: 1100px !important; }}
  
-[data-testid="stHeader"] {
-    background-color: #080c14 !important;
-}
+* {{ color: {txt}; }}
+p, span, div {{ color: {txt}; }}
  
-/* 사이드바 */
-[data-testid="stSidebar"] {
-    background-color: #0d1117 !important;
-    border-right: 1px solid rgba(255,255,255,0.06) !important;
-}
+.app-header {{
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 2rem; padding: 1rem 0 1.5rem;
+    border-bottom: 2px solid {header_border}; flex-wrap: wrap;
+}}
+.app-logo {{
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, {accent}, {accent2});
+    border-radius: 12px; display: flex; align-items: center;
+    justify-content: center; font-size: 22px; flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(37,99,235,0.25);
+}}
+.app-title {{ font-size:18px; font-weight:700; letter-spacing:-0.02em; color:{txt} !important; margin:0; white-space:nowrap; }}
+.app-subtitle {{ font-size:10px; color:{txt_dim} !important; letter-spacing:0.08em; text-transform:uppercase; margin:3px 0 0; }}
  
-/* 메인 컨테이너 여백 */
-.block-container {
-    padding: 2rem 2.5rem !important;
-    max-width: 1100px !important;
-}
+.section-label {{
+    font-size:10px; font-weight:700; letter-spacing:0.12em;
+    text-transform:uppercase; color:{accent} !important;
+    margin-bottom:10px; display:flex; align-items:center; gap:8px;
+}}
+.section-label::before {{
+    content:''; display:inline-block; width:16px; height:2px;
+    background:{accent}; border-radius:2px;
+}}
  
-/* 모든 텍스트 기본색 */
-* { color: #dde2f0; }
+.info-card {{
+    background:{card_bg}; border:1px solid {border2};
+    border-radius:14px; padding:20px 22px; margin-bottom:16px;
+    position:relative; overflow:hidden;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+}}
+.info-card::before {{
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,{accent},{accent2},transparent);
+}}
  
-/* ── 헤더 ── */
-.app-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 2rem;
-    padding: 1rem 0 1.5rem;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    flex-wrap: wrap;
-}
-.app-logo {
-    width: 40px; height: 40px;
-    background: linear-gradient(135deg, #3d7fff, #00c8e0);
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-    flex-shrink: 0;
-}
-.app-title-block {}
-.app-title {
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: #fff;
-    margin: 0;
-    white-space: nowrap;
-}
-.app-subtitle {
-    font-size: 10px;
-    color: #5a6480;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin: 2px 0 0;
-    white-space: nowrap;
-}
+.profile-grid {{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:4px; }}
+.profile-item {{ background:{item_bg}; border:1px solid {border2}; border-radius:10px; padding:12px 14px; }}
+.profile-key {{ font-size:10px; color:{prof_key} !important; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; margin-bottom:5px; }}
+.profile-val {{ font-size:14px; font-weight:600; color:{prof_val} !important; font-family:'DM Mono',monospace; }}
  
-/* ── 섹션 레이블 ── */
-.section-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #3d7fff;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.section-label::before {
-    content: '';
-    display: inline-block;
-    width: 16px; height: 1px;
-    background: #3d7fff;
-}
+[data-testid="stExpander"] {{
+    background:{exp_bg} !important; border:1px solid {exp_border} !important;
+    border-radius:10px !important; margin-bottom:6px !important;
+}}
  
-/* ── 카드 ── */
-.info-card {
-    background: #0d1117;
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 12px;
-    padding: 20px 22px;
-    margin-bottom: 16px;
-    position: relative;
-    overflow: hidden;
-}
-.info-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #3d7fff, #00c8e0, transparent);
-}
+.coaching-result {{
+    background:{coaching_bg}; border:1px solid {coaching_border};
+    border-radius:14px; padding:24px 26px; margin-top:12px;
+    box-shadow:{coaching_shadow};
+}}
+.coaching-section {{ margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid {section_div}; }}
+.coaching-section:last-child {{ margin-bottom:0; padding-bottom:0; border-bottom:none; }}
+.coaching-section-title {{ font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:10px; }}
+.coaching-section-body {{ font-size:14px; line-height:1.85; color:{txt_body} !important; }}
  
-/* ── 직원 프로필 그리드 ── */
-.profile-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-top: 4px;
-}
-.profile-item {
-    background: #131920;
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 8px;
-    padding: 12px 14px;
-}
-.profile-key {
-    font-size: 10px;
-    color: #4a5570;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-}
-.profile-val {
-    font-size: 15px;
-    font-weight: 500;
-    color: #dde2f0;
-    font-family: 'DM Mono', monospace;
-}
- 
-/* ── 면담 기록 아이템 ── */
-.interview-item {
-    background: #0d1117;
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 10px;
-    padding: 14px 18px;
-    margin-bottom: 8px;
-    transition: border-color 0.2s;
-}
-.interview-item:hover {
-    border-color: rgba(61,127,255,0.3);
-}
-.interview-date {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: #3d7fff;
-    margin-bottom: 4px;
-}
-.interview-type-badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 4px;
-    margin-left: 8px;
-    vertical-align: middle;
-}
-.badge-고과 { background: rgba(240,165,0,0.15); color: #f0a500; }
-.badge-수시 { background: rgba(61,127,255,0.15); color: #3d7fff; }
-.badge-복귀 { background: rgba(0,212,138,0.15); color: #00d48a; }
- 
-/* ── AI 코칭 결과 ── */
-.coaching-result {
-    background: linear-gradient(135deg, #0d1117, #111a2e);
-    border: 1px solid rgba(61,127,255,0.2);
-    border-radius: 12px;
-    padding: 24px 26px;
-    margin-top: 12px;
-    box-shadow: 0 0 40px rgba(61,127,255,0.05);
-}
-.coaching-section {
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-.coaching-section:last-child {
-    margin-bottom: 0;
-    padding-bottom: 0;
-    border-bottom: none;
-}
-.coaching-section-title {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #00c8e0;
-    margin-bottom: 10px;
-}
-.coaching-section-body {
-    font-size: 14px;
-    line-height: 1.8;
-    color: #b0bcd4;
-}
- 
-/* ── 입력 필드 커스텀 ── */
 [data-testid="stTextInput"] input,
 [data-testid="stSelectbox"] select,
-[data-testid="stTextArea"] textarea {
-    background: #0d1117 !important;
-    border: 1px solid rgba(255,255,255,0.08) !important;
-    border-radius: 8px !important;
-    color: #dde2f0 !important;
-    font-family: 'Noto Sans KR', sans-serif !important;
-}
+[data-testid="stTextArea"] textarea {{
+    background:{input_bg} !important; border:1.5px solid {input_border} !important;
+    border-radius:8px !important; color:{input_txt} !important;
+    font-family:'Noto Sans KR',sans-serif !important; font-size:14px !important;
+}}
 [data-testid="stTextInput"] input:focus,
-[data-testid="stTextArea"] textarea:focus {
-    border-color: rgba(61,127,255,0.5) !important;
-    box-shadow: 0 0 0 2px rgba(61,127,255,0.1) !important;
-}
+[data-testid="stTextArea"] textarea:focus {{
+    border-color:{accent} !important;
+    box-shadow:0 0 0 3px rgba(37,99,235,0.12) !important;
+}}
  
-/* ── 버튼 ── */
-[data-testid="stButton"] button {
-    background: linear-gradient(135deg, #3d7fff, #2563eb) !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    font-family: 'Noto Sans KR', sans-serif !important;
-    padding: 0.5rem 1.5rem !important;
-    transition: all 0.2s !important;
-}
-[data-testid="stButton"] button:hover {
-    opacity: 0.85 !important;
-    transform: translateY(-1px) !important;
-}
+[data-testid="stButton"] button {{
+    background:{btn_grad} !important; color:white !important;
+    border:none !important; border-radius:9px !important;
+    font-weight:600 !important; font-family:'Noto Sans KR',sans-serif !important;
+    font-size:14px !important; padding:0.55rem 1.5rem !important;
+    box-shadow:{btn_shadow} !important; transition:all 0.2s !important;
+}}
+[data-testid="stButton"] button:hover {{
+    opacity:0.88 !important; transform:translateY(-1px) !important;
+}}
  
-/* ── 구분선 ── */
-hr { border-color: rgba(255,255,255,0.06) !important; }
+hr {{ border-color:{hr_color} !important; }}
  
-/* ── 성공/경고 메시지 ── */
-[data-testid="stSuccess"] {
-    background: rgba(0,212,138,0.08) !important;
-    border: 1px solid rgba(0,212,138,0.2) !important;
-    border-radius: 8px !important;
-}
-[data-testid="stWarning"] {
-    background: rgba(240,165,0,0.08) !important;
-    border: 1px solid rgba(240,165,0,0.2) !important;
-    border-radius: 8px !important;
-}
+[data-testid="stSuccess"] {{
+    background:{success_bg} !important; border:1px solid {success_border} !important; border-radius:8px !important;
+}}
+[data-testid="stWarning"] {{
+    background:{warn_bg} !important; border:1px solid {warn_border} !important; border-radius:8px !important;
+}}
  
-/* selectbox 드롭다운 — 선택 박스 */
-[data-testid="stSelectbox"] > div > div {
-    background: #0d1117 !important;
-    border: 1px solid rgba(255,255,255,0.08) !important;
-    border-radius: 8px !important;
-    color: #dde2f0 !important;
-}
+[data-testid="stSelectbox"] > div > div {{
+    background:{input_bg} !important; border:1.5px solid {input_border} !important;
+    border-radius:8px !important; color:{input_txt} !important;
+}}
+[data-baseweb="popover"],[data-baseweb="menu"],ul[data-baseweb="menu"] {{
+    background:{pop_bg} !important; border:1px solid {pop_border} !important;
+    border-radius:10px !important; box-shadow:{pop_shadow} !important;
+}}
+[data-baseweb="menu"] li,[role="option"] {{
+    background:{pop_bg} !important; color:{pop_txt} !important;
+    font-family:'Noto Sans KR',sans-serif !important; font-size:13px !important;
+}}
+[data-baseweb="menu"] li:hover,[role="option"]:hover {{
+    background:{pop_hover_bg} !important; color:{pop_hover_txt} !important;
+}}
+[aria-selected="true"] {{
+    background:{pop_sel_bg} !important; color:{pop_sel_txt} !important; font-weight:600 !important;
+}}
  
-/* selectbox 팝업 리스트 전체 */
-[data-baseweb="popover"],
-[data-baseweb="menu"],
-ul[data-baseweb="menu"],
-[data-baseweb="select"] ul {
-    background: #0d1117 !important;
-    border: 1px solid rgba(255,255,255,0.1) !important;
-    border-radius: 10px !important;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.6) !important;
-}
+[data-testid="stWidgetLabel"] p {{
+    font-size:11px !important; font-weight:700 !important;
+    letter-spacing:0.06em !important; text-transform:uppercase !important;
+    color:{lbl_color} !important;
+}}
+[data-testid="stSpinner"] {{ color:{accent} !important; }}
  
-/* 팝업 각 항목 */
-[data-baseweb="menu"] li,
-[role="option"] {
-    background: #0d1117 !important;
-    color: #dde2f0 !important;
-    font-family: 'Noto Sans KR', sans-serif !important;
-    font-size: 13px !important;
-}
+[data-testid="stSidebar"] * {{ color:{txt}; }}
+[data-testid="stSidebar"] input {{
+    background:{sidebar_input} !important; border:1.5px solid {input_border} !important;
+    color:{input_txt} !important; border-radius:8px !important;
+}}
  
-/* 호버 */
-[data-baseweb="menu"] li:hover,
-[role="option"]:hover {
-    background: rgba(61,127,255,0.12) !important;
-    color: #fff !important;
-}
- 
-/* 선택된 항목 */
-[aria-selected="true"] {
-    background: rgba(61,127,255,0.2) !important;
-    color: #3d7fff !important;
-}
- 
-/* spinner */
-[data-testid="stSpinner"] { color: #3d7fff !important; }
- 
-/* 라벨 */
-[data-testid="stWidgetLabel"] p {
-    font-size: 11px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.06em !important;
-    text-transform: uppercase !important;
-    color: #4a5570 !important;
-}
- 
-/* expander */
-[data-testid="stExpander"] {
-    background: #0d1117 !important;
-    border: 1px solid rgba(255,255,255,0.06) !important;
-    border-radius: 10px !important;
-}
+/* 토글 버튼만 별도 스타일 */
+.toggle-btn button {{
+    background: transparent !important;
+    border: 1.5px solid {border2} !important;
+    color: {txt} !important;
+    box-shadow: none !important;
+    font-size: 12px !important;
+    padding: 0.3rem 0.9rem !important;
+    border-radius: 20px !important;
+}}
+.toggle-btn button:hover {{
+    border-color: {accent} !important;
+    color: {accent} !important;
+    transform: none !important;
+}}
 </style>
 """, unsafe_allow_html=True)
+ 
+    return toggle_icon, toggle_label
+ 
+# 테마 적용
+toggle_icon, toggle_label = apply_theme(st.session_state.dark_mode)
  
  
 # ─────────────────────────────────────────
@@ -426,16 +387,25 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
  
-# 헤더
-st.markdown("""
-<div class="app-header">
-    <div class="app-logo">🤝</div>
-    <div class="app-title-block">
-        <p class="app-title">AI 1on1 면담 코치</p>
-        <p class="app-subtitle">Powered by Bill Campbell's Coaching Philosophy</p>
+# 헤더 + 토글 버튼
+hdr_col, toggle_col = st.columns([6, 1])
+with hdr_col:
+    st.markdown("""
+    <div class="app-header">
+        <div class="app-logo">🤝</div>
+        <div class="app-title-block">
+            <p class="app-title">AI 1on1 면담 코치</p>
+            <p class="app-subtitle">Powered by Bill Campbell's Coaching Philosophy</p>
+        </div>
     </div>
-</div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
+with toggle_col:
+    st.markdown("<div style='padding-top:18px'>", unsafe_allow_html=True)
+    st.markdown('<div class="toggle-btn">', unsafe_allow_html=True)
+    if st.button(f"{toggle_icon} {toggle_label}", key="theme_toggle"):
+        st.session_state.dark_mode = not st.session_state.dark_mode
+        st.rerun()
+    st.markdown("</div></div>", unsafe_allow_html=True)
  
 # 데이터 로드
 try:
@@ -455,15 +425,18 @@ if "manager_id" not in st.session_state or not st.session_state.get("_mgr_entere
 #  사이드바 — 관리자 로그인 + 직원 선택
 # ─────────────────────────────────────────
 with st.sidebar:
-    # 모바일 안내 배너
-    st.markdown("""
+    # 모바일 안내 배너 (테마 반응)
+    _dark = st.session_state.dark_mode
+    _b_bg  = "rgba(0,200,224,0.07)" if _dark else "#eff6ff"
+    _b_bdr = "rgba(0,200,224,0.15)" if _dark else "#bfdbfe"
+    _b_txt = "#5a8090"              if _dark else "#3b5bdb"
+    _b_ico = "#00c8e0"              if _dark else "#1d4ed8"
+    st.markdown(f"""
     <div style="margin-bottom:20px;padding:10px 12px;
-                background:rgba(0,200,224,0.07);
-                border:1px solid rgba(0,200,224,0.15);
-                border-radius:8px;font-size:11px;
-                color:#5a8090;line-height:1.6;">
+                background:{_b_bg};border:1px solid {_b_bdr};
+                border-radius:8px;font-size:11px;color:{_b_txt};line-height:1.6;">
         📱 모바일이라면 화면 왼쪽 상단<br>
-        <b style="color:#00c8e0;">＞</b> 버튼을 눌러 메뉴를 여세요
+        <b style="color:{_b_ico};">＞</b> 버튼을 눌러 메뉴를 여세요
     </div>
     """, unsafe_allow_html=True)
  
@@ -494,28 +467,33 @@ with st.sidebar:
         """, unsafe_allow_html=True)
  
         # 본문에도 안내 (모바일에서 사이드바 닫혀있을 때 대비)
-        st.markdown("""
-        <div style="margin-top:40px;text-align:center;padding:48px 24px;
-                    background:#0d1117;border:1px dashed rgba(61,127,255,0.2);
-                    border-radius:16px;">
-            <div style="font-size:36px;margin-bottom:16px;">🤝</div>
-            <div style="font-size:18px;font-weight:700;color:#dde2f0;margin-bottom:8px;">
+        dark = st.session_state.dark_mode
+        card_bg   = "#0d1117" if dark else "#ffffff"
+        card_bdr  = "rgba(61,127,255,0.2)" if dark else "#bfcfff"
+        title_c   = "#dde2f0" if dark else "#0f172a"
+        sub_c     = "#5a6480" if dark else "#64748b"
+        hint_c    = "#3a4560" if dark else "#94a3b8"
+        arrow_c   = "#5a6480" if dark else "#64748b"
+        st.markdown(f"""
+        <div style="margin-top:40px;text-align:center;padding:56px 24px;
+                    background:{card_bg};border:1.5px dashed {card_bdr};
+                    border-radius:16px;box-shadow:0 2px 12px rgba(37,99,235,0.06);">
+            <div style="font-size:40px;margin-bottom:16px;">🤝</div>
+            <div style="font-size:20px;font-weight:700;color:{title_c};margin-bottom:8px;">
                 AI 1on1 면담 코치
             </div>
-            <div style="font-size:13px;color:#5a6480;margin-bottom:28px;line-height:1.7;">
+            <div style="font-size:14px;color:{sub_c};margin-bottom:28px;line-height:1.7;">
                 관리자 사번을 입력하고 시작하세요
             </div>
             <div style="display:inline-flex;align-items:center;gap:8px;
-                        padding:12px 24px;
-                        background:rgba(61,127,255,0.1);
-                        border:1px solid rgba(61,127,255,0.3);
-                        border-radius:10px;
-                        font-size:13px;color:#3d7fff;font-weight:600;">
-                <span style="font-size:18px;">◀</span>
-                왼쪽 메뉴에서 관리자 사번 입력
+                        padding:12px 28px;
+                        background:linear-gradient(135deg,#2563eb,#0ea5e9);
+                        border-radius:10px;font-size:14px;color:#fff;font-weight:600;
+                        box-shadow:0 4px 14px rgba(37,99,235,0.3);">
+                ◀ &nbsp;왼쪽 메뉴에서 관리자 사번 입력
             </div>
-            <div style="margin-top:16px;font-size:11px;color:#3a4560;">
-                📱 모바일: 상단 왼쪽 <b style="color:#5a6480;">&gt;&gt;</b> 버튼을 먼저 누르세요
+            <div style="margin-top:16px;font-size:12px;color:{hint_c};">
+                📱 모바일: 상단 왼쪽 <b style="color:{arrow_c};">&gt;&gt;</b> 버튼을 먼저 누르세요
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -548,17 +526,21 @@ with st.sidebar:
     last_date = emp_interviews_all["INTERVIEWDATE"].max()
     last_date_str = last_date.strftime("%Y.%m.%d") if pd.notna(last_date) else "기록 없음"
  
+    _qs_bg  = "rgba(0,200,224,0.05)" if _dark else "#f0f9ff"
+    _qs_bdr = "rgba(0,200,224,0.12)" if _dark else "#bae6fd"
+    _qs_lbl = "#4a5570"              if _dark else "#64748b"
+    _qs_val = "#00c8e0"              if _dark else "#0369a1"
     st.markdown(f"""
-    <div style="margin-top:16px;padding:14px;background:rgba(0,200,224,0.05);
-                border:1px solid rgba(0,200,224,0.12);border-radius:8px;">
-        <div style="font-size:10px;color:#4a5570;margin-bottom:6px;
-                    font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">
+    <div style="margin-top:16px;padding:14px;background:{_qs_bg};
+                border:1px solid {_qs_bdr};border-radius:8px;">
+        <div style="font-size:10px;color:{_qs_lbl};margin-bottom:6px;
+                    font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">
             최근 면담
         </div>
-        <div style="font-family:'DM Mono',monospace;font-size:13px;color:#00c8e0;">
+        <div style="font-family:'DM Mono',monospace;font-size:13px;color:{_qs_val};font-weight:600;">
             {last_date_str}
         </div>
-        <div style="font-size:11px;color:#4a5570;margin-top:4px;">
+        <div style="font-size:11px;color:{_qs_lbl};margin-top:4px;">
             총 {len(emp_interviews_all)}회 면담 기록
         </div>
     </div>
