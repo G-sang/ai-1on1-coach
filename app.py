@@ -249,6 +249,23 @@ hr {{ border-color:{hr_color} !important; }}
     color:{input_txt} !important; border-radius:8px !important;
 }}
 
+/* 사이드바 << >> 접기/펼치기 버튼 */
+[data-testid="stSidebarCollapsedControl"] {{
+    background: {"rgba(255,255,255,0.06)" if dark else "#ffffff"} !important;
+    border: 1px solid {border} !important;
+    border-radius: 0 8px 8px 0 !important;
+    box-shadow: 2px 0 8px rgba(0,0,0,{"0.3" if dark else "0.08"}) !important;
+}}
+[data-testid="stSidebarCollapsedControl"] button,
+[data-testid="stSidebarCollapsedControl"] svg {{
+    color: {"#dde2f0" if dark else "#0f172a"} !important;
+    fill: {"#dde2f0" if dark else "#0f172a"} !important;
+}}
+button[data-testid="baseButton-headerNoPadding"] svg {{
+    color: {"#dde2f0" if dark else "#1a2036"} !important;
+    fill: {"#dde2f0" if dark else "#1a2036"} !important;
+}}
+
 /* 토글 버튼만 별도 스타일 */
 .toggle-btn button {{
     background: transparent !important;
