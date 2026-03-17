@@ -397,39 +397,29 @@ with st.sidebar:
 # ── 사이드바 밖: manager_id 없으면 온보딩 카드 표시 후 중단 ──
 if not manager_id:
     st.markdown("""
-    <div style="margin-top:40px;text-align:center;padding:40px 24px 28px;
+    <div style="margin-top:40px;text-align:center;padding:40px 24px 36px;
                 background:#ffffff;border:1.5px dashed #bfcfff;border-radius:16px;">
         <div style="font-size:44px;margin-bottom:14px;">🤝</div>
         <div style="font-size:20px;font-weight:700;color:#0f172a;margin-bottom:8px;">
             AI 1on1 면담 코치
         </div>
-        <div style="font-size:14px;color:#64748b;line-height:1.8;margin-bottom:24px;">
+        <div style="font-size:14px;color:#64748b;line-height:1.8;margin-bottom:28px;">
             관리자 사번을 입력하고 시작하세요
         </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # 모바일에서 >> 버튼 대신 쓸 수 있는 명확한 버튼
-    _, mid, _ = st.columns([1, 2, 1])
-    with mid:
-        st.markdown("""
-        <style>
-        div[data-testid="stVerticalBlock"] > div:nth-child(2) button {
-            background: #1e293b !important;
-            color: white !important;
-            font-size: 15px !important;
-            padding: 0.7rem 1rem !important;
-            border-radius: 10px !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-        }
-        </style>
-        """, unsafe_allow_html=True)
-        if st.button("☰  메뉴 열기 → 사번 입력", use_container_width=True):
-            st.rerun()
-
-    st.markdown("""
-    <div style="text-align:center;margin-top:10px;font-size:12px;color:#94a3b8;">
-        PC · 태블릿은 왼쪽 사이드바에서 바로 입력 가능합니다
+        <div style="display:inline-block;
+                    background:#1e293b;
+                    color:#ffffff;
+                    font-size:15px;
+                    font-weight:600;
+                    padding:14px 32px;
+                    border-radius:12px;
+                    box-shadow:0 4px 14px rgba(0,0,0,0.2);
+                    letter-spacing:0.02em;">
+            ☰ &nbsp;왼쪽 위 버튼 눌러서 사번 입력
+        </div>
+        <div style="margin-top:16px;font-size:12px;color:#94a3b8;">
+            PC는 왼쪽 사이드바에서 바로 입력 가능합니다
+        </div>
     </div>
     """, unsafe_allow_html=True)
     st.stop()
