@@ -152,17 +152,29 @@ hr { border-color:#e8ecf4 !important; }
     color:#0f172a !important; border-radius:8px !important;
 }
 
-/* 사이드바 << >> 접기/펼치기 버튼 — 라이트 모드 */
+/* 사이드바 >> 버튼 — 어두운 배경 + 흰 아이콘으로 확실하게 */
 [data-testid="stSidebarCollapsedControl"] {
-    background: #ffffff !important;
-    border: 1px solid #e2e6f0 !important;
-    border-radius: 0 8px 8px 0 !important;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.08) !important;
+    background: #1e293b !important;
+    border-radius: 0 10px 10px 0 !important;
+    box-shadow: 3px 0 12px rgba(0,0,0,0.2) !important;
+    border: none !important;
 }
-[data-testid="stSidebarCollapsedControl"] button,
-[data-testid="stSidebarCollapsedControl"] svg {
-    color: #0f172a !important;
-    fill: #0f172a !important;
+[data-testid="stSidebarCollapsedControl"] button {
+    background: transparent !important;
+}
+[data-testid="stSidebarCollapsedControl"] svg,
+[data-testid="stSidebarCollapsedControl"] svg path,
+[data-testid="stSidebarCollapsedControl"] button svg {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
+}
+/* 사이드바 내부 << 닫기 버튼도 동일하게 */
+[data-testid="stSidebarCollapseButton"] button {
+    color: #64748b !important;
+}
+[data-testid="stSidebarCollapseButton"] svg {
+    fill: #64748b !important;
 }
 /* 면담 결과 입력 영역 — 카드 배경 */
 [data-testid="stSelectbox"],
