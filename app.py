@@ -6,180 +6,155 @@ from openai import OpenAI
 from datetime import datetime
 
 # ─────────────────────────────────────────
-#  CSS — 라이트 모드 고정
+#  CSS — 다크 모드 고정
 # ─────────────────────────────────────────
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap');
 
 html, body, [data-testid="stAppViewContainer"] {
-    background-color: #e8edf5 !important;
+    background-color: #080c14 !important;
     font-family: 'Noto Sans KR', sans-serif !important;
 }
 [data-testid="stHeader"] {
-    background-color: #e8edf5 !important;
-    border-bottom: 1px solid #d0d7e8 !important;
+    background-color: #080c14 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
 }
 [data-testid="stSidebar"] {
-    background-color: #ffffff !important;
-    border-right: 1px solid #e2e6f0 !important;
-    box-shadow: 2px 0 12px rgba(0,0,0,0.04) !important;
+    background-color: #0d1117 !important;
+    border-right: 1px solid rgba(255,255,255,0.06) !important;
 }
 .block-container { padding: 2rem 2.5rem !important; max-width: 1100px !important; }
 
-* { color: #1a2036; }
-p, span, div { color: #1a2036; }
+* { color: #dde2f0; }
+p, span, div { color: #dde2f0; }
 
 .app-header {
     display: flex; align-items: center; gap: 14px;
     margin-bottom: 2rem; padding: 1rem 0 1.5rem;
-    border-bottom: 2px solid #e8ecf4; flex-wrap: wrap;
+    border-bottom: 1px solid rgba(255,255,255,0.06); flex-wrap: wrap;
 }
 .app-logo {
     width: 44px; height: 44px;
-    background: linear-gradient(135deg, #2563eb, #0ea5e9);
+    background: linear-gradient(135deg, #3d7fff, #00c8e0);
     border-radius: 12px; display: flex; align-items: center;
     justify-content: center; font-size: 22px; flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(37,99,235,0.25);
+    box-shadow: 0 4px 12px rgba(61,127,255,0.3);
 }
-.app-title  { font-size:18px; font-weight:700; letter-spacing:-0.02em; color:#0f172a !important; margin:0; white-space:nowrap; }
-.app-subtitle { font-size:10px; color:#94a3b8 !important; letter-spacing:0.08em; text-transform:uppercase; margin:3px 0 0; }
+.app-title    { font-size:18px; font-weight:700; letter-spacing:-0.02em; color:#ffffff !important; margin:0; white-space:nowrap; }
+.app-subtitle { font-size:10px; color:#4a5570 !important; letter-spacing:0.08em; text-transform:uppercase; margin:3px 0 0; }
 
 .section-label {
     font-size:10px; font-weight:700; letter-spacing:0.12em;
-    text-transform:uppercase; color:#2563eb !important;
+    text-transform:uppercase; color:#3d7fff !important;
     margin-bottom:10px; display:flex; align-items:center; gap:8px;
 }
 .section-label::before {
     content:''; display:inline-block; width:16px; height:2px;
-    background:#2563eb; border-radius:2px;
+    background:#3d7fff; border-radius:2px;
 }
 
 .info-card {
-    background:#ffffff; border:1px solid #e8ecf4;
+    background:#0d1117; border:1px solid rgba(255,255,255,0.07);
     border-radius:14px; padding:20px 22px; margin-bottom:16px;
     position:relative; overflow:hidden;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
 }
 .info-card::before {
-    content:''; position:absolute; top:0; left:0; right:0; height:3px;
-    background:linear-gradient(90deg,#2563eb,#0ea5e9,transparent);
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:linear-gradient(90deg,#3d7fff,#00c8e0,transparent);
 }
 
 .profile-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:4px; }
-.profile-item { background:#f8faff; border:1px solid #e8ecf4; border-radius:10px; padding:12px 14px; }
-.profile-key  { font-size:10px; color:#94a3b8 !important; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; margin-bottom:5px; }
-.profile-val  { font-size:14px; font-weight:600; color:#0f172a !important; font-family:'DM Mono',monospace; }
+.profile-item { background:#131920; border:1px solid rgba(255,255,255,0.05); border-radius:10px; padding:12px 14px; }
+.profile-key  { font-size:10px; color:#4a5570 !important; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; margin-bottom:5px; }
+.profile-val  { font-size:14px; font-weight:600; color:#dde2f0 !important; font-family:'DM Mono',monospace; }
 
 [data-testid="stExpander"] {
-    background:#ffffff !important; border:1px solid #e8ecf4 !important;
+    background:#0d1117 !important; border:1px solid rgba(255,255,255,0.06) !important;
     border-radius:10px !important; margin-bottom:6px !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
 }
 
 .coaching-result {
-    background:#ffffff; border:1px solid #dbeafe;
+    background:linear-gradient(135deg,#0d1117,#111a2e);
+    border:1px solid rgba(61,127,255,0.2);
     border-radius:14px; padding:24px 26px; margin-top:12px;
-    box-shadow: 0 4px 20px rgba(37,99,235,0.08);
+    box-shadow:0 0 40px rgba(61,127,255,0.05);
 }
-.coaching-section { margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid #f1f5f9; }
+.coaching-section { margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.05); }
 .coaching-section:last-child { margin-bottom:0; padding-bottom:0; border-bottom:none; }
 .coaching-section-title { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:10px; }
-.coaching-section-body  { font-size:14px; line-height:1.85; color:#334155 !important; }
+.coaching-section-body  { font-size:14px; line-height:1.85; color:#b0bcd4 !important; }
 
 [data-testid="stTextInput"] input,
 [data-testid="stSelectbox"] select,
 [data-testid="stTextArea"] textarea {
-    background:#ffffff !important; border:1.5px solid #d1d9f0 !important;
-    border-radius:8px !important; color:#0f172a !important;
+    background:#0d1117 !important; border:1px solid rgba(255,255,255,0.08) !important;
+    border-radius:8px !important; color:#dde2f0 !important;
     font-family:'Noto Sans KR',sans-serif !important; font-size:14px !important;
 }
 [data-testid="stTextInput"] input:focus,
 [data-testid="stTextArea"] textarea:focus {
-    border-color:#2563eb !important;
-    box-shadow:0 0 0 3px rgba(37,99,235,0.1) !important;
+    border-color:#3d7fff !important;
+    box-shadow:0 0 0 3px rgba(61,127,255,0.12) !important;
 }
 
 [data-testid="stButton"] button {
-    background:linear-gradient(135deg,#2563eb,#0ea5e9) !important;
+    background:linear-gradient(135deg,#3d7fff,#2563eb) !important;
     color:white !important; border:none !important; border-radius:9px !important;
     font-weight:600 !important; font-family:'Noto Sans KR',sans-serif !important;
     font-size:14px !important; padding:0.55rem 1.5rem !important;
-    box-shadow:0 4px 12px rgba(37,99,235,0.25) !important; transition:all 0.2s !important;
+    box-shadow:0 4px 12px rgba(61,127,255,0.3) !important; transition:all 0.2s !important;
 }
 [data-testid="stButton"] button:hover {
     opacity:0.88 !important; transform:translateY(-1px) !important;
 }
 
-hr { border-color:#e8ecf4 !important; }
+hr { border-color:rgba(255,255,255,0.06) !important; }
 
 [data-testid="stSuccess"] {
-    background:#f0fdf4 !important; border:1px solid #86efac !important; border-radius:8px !important;
+    background:rgba(0,212,138,0.08) !important;
+    border:1px solid rgba(0,212,138,0.2) !important; border-radius:8px !important;
 }
 [data-testid="stWarning"] {
-    background:#fffbeb !important; border:1px solid #fcd34d !important; border-radius:8px !important;
+    background:rgba(240,165,0,0.08) !important;
+    border:1px solid rgba(240,165,0,0.2) !important; border-radius:8px !important;
 }
 
 [data-testid="stSelectbox"] > div > div {
-    background:#ffffff !important; border:1.5px solid #d1d9f0 !important;
-    border-radius:8px !important; color:#0f172a !important;
+    background:#0d1117 !important; border:1px solid rgba(255,255,255,0.08) !important;
+    border-radius:8px !important; color:#dde2f0 !important;
 }
 [data-baseweb="popover"],[data-baseweb="menu"],ul[data-baseweb="menu"] {
-    background:#ffffff !important; border:1px solid #e2e6f0 !important;
-    border-radius:10px !important; box-shadow:0 8px 32px rgba(0,0,0,0.12) !important;
+    background:#0d1117 !important; border:1px solid rgba(255,255,255,0.1) !important;
+    border-radius:10px !important; box-shadow:0 8px 32px rgba(0,0,0,0.6) !important;
 }
 [data-baseweb="menu"] li,[role="option"] {
-    background:#ffffff !important; color:#1a2036 !important;
+    background:#0d1117 !important; color:#dde2f0 !important;
     font-family:'Noto Sans KR',sans-serif !important; font-size:13px !important;
 }
 [data-baseweb="menu"] li:hover,[role="option"]:hover {
-    background:#eff4ff !important; color:#2563eb !important;
+    background:rgba(61,127,255,0.12) !important; color:#ffffff !important;
 }
 [aria-selected="true"] {
-    background:#dbeafe !important; color:#1d4ed8 !important; font-weight:600 !important;
+    background:rgba(61,127,255,0.2) !important; color:#3d7fff !important; font-weight:600 !important;
 }
 
 [data-testid="stWidgetLabel"] p {
     font-size:11px !important; font-weight:700 !important;
     letter-spacing:0.06em !important; text-transform:uppercase !important;
-    color:#64748b !important;
+    color:#4a5570 !important;
 }
-[data-testid="stSpinner"] { color:#2563eb !important; }
+[data-testid="stSpinner"] { color:#3d7fff !important; }
 
-[data-testid="stSidebar"] * { color:#1a2036; }
+[data-testid="stSidebar"] * { color:#dde2f0; }
 [data-testid="stSidebar"] input {
-    background:#f8faff !important; border:1.5px solid #d1d9f0 !important;
-    color:#0f172a !important; border-radius:8px !important;
+    background:#131920 !important; border:1px solid rgba(255,255,255,0.08) !important;
+    color:#dde2f0 !important; border-radius:8px !important;
 }
 
-/* 사이드바 >> 버튼 — 어두운 배경 + 흰 아이콘으로 확실하게 */
-[data-testid="stSidebarCollapsedControl"] {
-    background: #1e293b !important;
-    border-radius: 0 10px 10px 0 !important;
-    box-shadow: 3px 0 12px rgba(0,0,0,0.2) !important;
-    border: none !important;
-}
-[data-testid="stSidebarCollapsedControl"] button {
-    background: transparent !important;
-}
-[data-testid="stSidebarCollapsedControl"] svg,
-[data-testid="stSidebarCollapsedControl"] svg path,
-[data-testid="stSidebarCollapsedControl"] button svg {
-    color: #ffffff !important;
-    fill: #ffffff !important;
-    stroke: #ffffff !important;
-}
-/* 사이드바 내부 << 닫기 버튼도 동일하게 */
-[data-testid="stSidebarCollapseButton"] button {
-    color: #64748b !important;
-}
-[data-testid="stSidebarCollapseButton"] svg {
-    fill: #64748b !important;
-}
-/* 면담 결과 입력 영역 — 카드 배경 */
+/* 면담 결과 입력 영역 */
 [data-testid="stSelectbox"],
 [data-testid="stTextArea"] {
-    background: #ffffff;
     border-radius: 10px;
     padding: 2px 0;
 }
@@ -345,9 +320,11 @@ with st.sidebar:
 
     if not manager_id:
         st.markdown("""
-        <div style="margin-top:8px;padding:12px;background:#eff6ff;
-                    border:1px solid #bfdbfe;border-radius:8px;
-                    font-size:12px;color:#3b5bdb;line-height:1.7;">
+        <div style="margin-top:8px;padding:12px;
+                    background:rgba(61,127,255,0.06);
+                    border:1px solid rgba(61,127,255,0.15);
+                    border-radius:8px;font-size:12px;
+                    color:#5a6480;line-height:1.7;">
             사번을 입력하면 담당 직원 목록이 나타납니다
         </div>
         """, unsafe_allow_html=True)
@@ -398,26 +375,23 @@ with st.sidebar:
 if not manager_id:
     st.markdown("""
     <div style="margin-top:40px;text-align:center;padding:40px 24px 36px;
-                background:#ffffff;border:1.5px dashed #bfcfff;border-radius:16px;">
+                background:#0d1117;border:1.5px dashed rgba(61,127,255,0.3);border-radius:16px;">
         <div style="font-size:44px;margin-bottom:14px;">🤝</div>
-        <div style="font-size:20px;font-weight:700;color:#0f172a;margin-bottom:8px;">
+        <div style="font-size:20px;font-weight:700;color:#dde2f0;margin-bottom:8px;">
             AI 1on1 면담 코치
         </div>
-        <div style="font-size:14px;color:#64748b;line-height:1.8;margin-bottom:28px;">
+        <div style="font-size:14px;color:#5a6480;line-height:1.8;margin-bottom:28px;">
             관리자 사번을 입력하고 시작하세요
         </div>
         <div style="display:inline-block;
-                    background:#1e293b;
-                    color:#ffffff;
-                    font-size:15px;
-                    font-weight:600;
-                    padding:14px 32px;
-                    border-radius:12px;
-                    box-shadow:0 4px 14px rgba(0,0,0,0.2);
+                    background:linear-gradient(135deg,#3d7fff,#2563eb);
+                    color:#ffffff;font-size:15px;font-weight:600;
+                    padding:14px 32px;border-radius:12px;
+                    box-shadow:0 4px 14px rgba(61,127,255,0.35);
                     letter-spacing:0.02em;">
             👈 &nbsp;왼쪽 메뉴에서 사번 입력
         </div>
-        <div style="margin-top:16px;font-size:12px;color:#94a3b8;">
+        <div style="margin-top:16px;font-size:12px;color:#3a4258;">
             메뉴가 안 보이면 화면을 왼쪽으로 밀어보세요
         </div>
     </div>
