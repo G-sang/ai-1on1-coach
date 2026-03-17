@@ -164,9 +164,12 @@ hr { border-color:#e8ecf4 !important; }
     color: #0f172a !important;
     fill: #0f172a !important;
 }
-button[data-testid="baseButton-headerNoPadding"] svg {
-    color: #1a2036 !important;
-    fill: #1a2036 !important;
+/* 면담 결과 입력 영역 — 카드 배경 */
+[data-testid="stSelectbox"],
+[data-testid="stTextArea"] {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 2px 0;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -499,9 +502,15 @@ with col_right:
     st.markdown("<div style='height:24px'></div>", unsafe_allow_html=True)
 
     # 면담 결과 입력
-    st.markdown('<div class="section-label">면담 결과 입력</div>', unsafe_allow_html=True)
-
-    st.markdown('<div class="info-card">', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="section-label">면담 결과 입력</div>
+    <div style="background:#ffffff;border:1px solid #e8ecf4;border-radius:14px;
+                padding:20px 22px;position:relative;overflow:hidden;
+                box-shadow:0 1px 6px rgba(0,0,0,0.05);">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;
+                    background:linear-gradient(90deg,#2563eb,#0ea5e9,transparent);"></div>
+    </div>
+    """, unsafe_allow_html=True)
 
     interview_type = st.selectbox(
         "면담 유형",
@@ -513,8 +522,6 @@ with col_right:
         height=160,
         placeholder="면담에서 논의된 핵심 내용, 합의 사항, 다음 액션 등을 입력하세요."
     )
-
-    st.markdown('</div>', unsafe_allow_html=True)
 
     if st.button("저장", use_container_width=True):
         if not interview_summary.strip():
