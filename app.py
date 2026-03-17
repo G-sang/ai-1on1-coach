@@ -6,288 +6,170 @@ from openai import OpenAI
 from datetime import datetime
 
 # ─────────────────────────────────────────
-#  테마 상태 초기화
+#  CSS — 라이트 모드 고정
 # ─────────────────────────────────────────
-if "dark_mode" not in st.session_state:
-    st.session_state.dark_mode = False
-
-def apply_theme(dark: bool):
-    if dark:
-        # ── 다크 팔레트 ──
-        bg       = "#080c14"
-        bg2      = "#0d1117"
-        bg3      = "#131920"
-        sidebar  = "#0d1117"
-        border   = "rgba(255,255,255,0.07)"
-        border2  = "rgba(255,255,255,0.04)"
-        txt      = "#dde2f0"
-        txt2     = "#0f172a"   # 실제 사용 안 함
-        txt_dim  = "#5a6480"
-        txt_body = "#b0bcd4"
-        accent   = "#3d7fff"
-        accent2  = "#00c8e0"
-        card_bg  = "#0d1117"
-        item_bg  = "#131920"
-        coaching_bg     = "linear-gradient(135deg,#0d1117,#111a2e)"
-        coaching_border = "rgba(61,127,255,0.2)"
-        coaching_shadow = "0 0 40px rgba(61,127,255,0.05)"
-        section_div     = "rgba(255,255,255,0.05)"
-        input_bg        = "#0d1117"
-        input_border    = "rgba(255,255,255,0.08)"
-        input_txt       = "#dde2f0"
-        sidebar_input   = "#0d1117"
-        pop_bg          = "#0d1117"
-        pop_border      = "rgba(255,255,255,0.1)"
-        pop_shadow      = "0 8px 32px rgba(0,0,0,0.6)"
-        pop_txt         = "#dde2f0"
-        pop_hover_bg    = "rgba(61,127,255,0.12)"
-        pop_hover_txt   = "#ffffff"
-        pop_sel_bg      = "rgba(61,127,255,0.2)"
-        pop_sel_txt     = "#3d7fff"
-        exp_bg          = "#0d1117"
-        exp_border      = "rgba(255,255,255,0.06)"
-        success_bg      = "rgba(0,212,138,0.08)"
-        success_border  = "rgba(0,212,138,0.2)"
-        warn_bg         = "rgba(240,165,0,0.08)"
-        warn_border     = "rgba(240,165,0,0.2)"
-        lbl_color       = "#4a5570"
-        header_border   = "rgba(255,255,255,0.06)"
-        hr_color        = "rgba(255,255,255,0.06)"
-        prof_key        = "#4a5570"
-        prof_val        = "#dde2f0"
-        btn_grad        = "linear-gradient(135deg,#3d7fff,#2563eb)"
-        btn_shadow      = "0 4px 12px rgba(61,127,255,0.3)"
-        toggle_icon     = "☀️"
-        toggle_label    = "라이트 모드"
-    else:
-        # ── 라이트 팔레트 ──
-        bg       = "#f4f6fb"
-        bg2      = "#ffffff"
-        bg3      = "#f8faff"
-        sidebar  = "#ffffff"
-        border   = "#e2e6f0"
-        border2  = "#e8ecf4"
-        txt      = "#1a2036"
-        txt2     = "#0f172a"
-        txt_dim  = "#94a3b8"
-        txt_body = "#334155"
-        accent   = "#2563eb"
-        accent2  = "#0ea5e9"
-        card_bg  = "#ffffff"
-        item_bg  = "#f8faff"
-        coaching_bg     = "#ffffff"
-        coaching_border = "#dbeafe"
-        coaching_shadow = "0 4px 20px rgba(37,99,235,0.08)"
-        section_div     = "#f1f5f9"
-        input_bg        = "#ffffff"
-        input_border    = "#d1d9f0"
-        input_txt       = "#0f172a"
-        sidebar_input   = "#f8faff"
-        pop_bg          = "#ffffff"
-        pop_border      = "#e2e6f0"
-        pop_shadow      = "0 8px 32px rgba(0,0,0,0.12)"
-        pop_txt         = "#1a2036"
-        pop_hover_bg    = "#eff4ff"
-        pop_hover_txt   = "#2563eb"
-        pop_sel_bg      = "#dbeafe"
-        pop_sel_txt     = "#1d4ed8"
-        exp_bg          = "#ffffff"
-        exp_border      = "#e8ecf4"
-        success_bg      = "#f0fdf4"
-        success_border  = "#86efac"
-        warn_bg         = "#fffbeb"
-        warn_border     = "#fcd34d"
-        lbl_color       = "#64748b"
-        header_border   = "#e8ecf4"
-        hr_color        = "#e8ecf4"
-        prof_key        = "#94a3b8"
-        prof_val        = "#0f172a"
-        btn_grad        = "linear-gradient(135deg,#2563eb,#0ea5e9)"
-        btn_shadow      = "0 4px 12px rgba(37,99,235,0.25)"
-        toggle_icon     = "🌙"
-        toggle_label    = "다크 모드"
-
-    st.markdown(f"""
+st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap');
 
-html, body, [data-testid="stAppViewContainer"] {{
-    background-color: {bg} !important;
+html, body, [data-testid="stAppViewContainer"] {
+    background-color: #f4f6fb !important;
     font-family: 'Noto Sans KR', sans-serif !important;
-}}
-[data-testid="stHeader"] {{
-    background-color: {bg} !important;
-    border-bottom: 1px solid {border} !important;
-}}
-[data-testid="stSidebar"] {{
-    background-color: {sidebar} !important;
-    border-right: 1px solid {border} !important;
-}}
-.block-container {{ padding: 2rem 2.5rem !important; max-width: 1100px !important; }}
+}
+[data-testid="stHeader"] {
+    background-color: #f4f6fb !important;
+    border-bottom: 1px solid #e2e6f0 !important;
+}
+[data-testid="stSidebar"] {
+    background-color: #ffffff !important;
+    border-right: 1px solid #e2e6f0 !important;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.04) !important;
+}
+.block-container { padding: 2rem 2.5rem !important; max-width: 1100px !important; }
 
-* {{ color: {txt}; }}
-p, span, div {{ color: {txt}; }}
+* { color: #1a2036; }
+p, span, div { color: #1a2036; }
 
-.app-header {{
+.app-header {
     display: flex; align-items: center; gap: 14px;
     margin-bottom: 2rem; padding: 1rem 0 1.5rem;
-    border-bottom: 2px solid {header_border}; flex-wrap: wrap;
-}}
-.app-logo {{
+    border-bottom: 2px solid #e8ecf4; flex-wrap: wrap;
+}
+.app-logo {
     width: 44px; height: 44px;
-    background: linear-gradient(135deg, {accent}, {accent2});
+    background: linear-gradient(135deg, #2563eb, #0ea5e9);
     border-radius: 12px; display: flex; align-items: center;
     justify-content: center; font-size: 22px; flex-shrink: 0;
     box-shadow: 0 4px 12px rgba(37,99,235,0.25);
-}}
-.app-title {{ font-size:18px; font-weight:700; letter-spacing:-0.02em; color:{txt} !important; margin:0; white-space:nowrap; }}
-.app-subtitle {{ font-size:10px; color:{txt_dim} !important; letter-spacing:0.08em; text-transform:uppercase; margin:3px 0 0; }}
+}
+.app-title  { font-size:18px; font-weight:700; letter-spacing:-0.02em; color:#0f172a !important; margin:0; white-space:nowrap; }
+.app-subtitle { font-size:10px; color:#94a3b8 !important; letter-spacing:0.08em; text-transform:uppercase; margin:3px 0 0; }
 
-.section-label {{
+.section-label {
     font-size:10px; font-weight:700; letter-spacing:0.12em;
-    text-transform:uppercase; color:{accent} !important;
+    text-transform:uppercase; color:#2563eb !important;
     margin-bottom:10px; display:flex; align-items:center; gap:8px;
-}}
-.section-label::before {{
+}
+.section-label::before {
     content:''; display:inline-block; width:16px; height:2px;
-    background:{accent}; border-radius:2px;
-}}
+    background:#2563eb; border-radius:2px;
+}
 
-.info-card {{
-    background:{card_bg}; border:1px solid {border2};
+.info-card {
+    background:#ffffff; border:1px solid #e8ecf4;
     border-radius:14px; padding:20px 22px; margin-bottom:16px;
     position:relative; overflow:hidden;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
-}}
-.info-card::before {{
+    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+}
+.info-card::before {
     content:''; position:absolute; top:0; left:0; right:0; height:3px;
-    background:linear-gradient(90deg,{accent},{accent2},transparent);
-}}
+    background:linear-gradient(90deg,#2563eb,#0ea5e9,transparent);
+}
 
-.profile-grid {{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:4px; }}
-.profile-item {{ background:{item_bg}; border:1px solid {border2}; border-radius:10px; padding:12px 14px; }}
-.profile-key {{ font-size:10px; color:{prof_key} !important; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; margin-bottom:5px; }}
-.profile-val {{ font-size:14px; font-weight:600; color:{prof_val} !important; font-family:'DM Mono',monospace; }}
+.profile-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:4px; }
+.profile-item { background:#f8faff; border:1px solid #e8ecf4; border-radius:10px; padding:12px 14px; }
+.profile-key  { font-size:10px; color:#94a3b8 !important; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; margin-bottom:5px; }
+.profile-val  { font-size:14px; font-weight:600; color:#0f172a !important; font-family:'DM Mono',monospace; }
 
-[data-testid="stExpander"] {{
-    background:{exp_bg} !important; border:1px solid {exp_border} !important;
+[data-testid="stExpander"] {
+    background:#ffffff !important; border:1px solid #e8ecf4 !important;
     border-radius:10px !important; margin-bottom:6px !important;
-}}
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+}
 
-.coaching-result {{
-    background:{coaching_bg}; border:1px solid {coaching_border};
+.coaching-result {
+    background:#ffffff; border:1px solid #dbeafe;
     border-radius:14px; padding:24px 26px; margin-top:12px;
-    box-shadow:{coaching_shadow};
-}}
-.coaching-section {{ margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid {section_div}; }}
-.coaching-section:last-child {{ margin-bottom:0; padding-bottom:0; border-bottom:none; }}
-.coaching-section-title {{ font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:10px; }}
-.coaching-section-body {{ font-size:14px; line-height:1.85; color:{txt_body} !important; }}
+    box-shadow: 0 4px 20px rgba(37,99,235,0.08);
+}
+.coaching-section { margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid #f1f5f9; }
+.coaching-section:last-child { margin-bottom:0; padding-bottom:0; border-bottom:none; }
+.coaching-section-title { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:10px; }
+.coaching-section-body  { font-size:14px; line-height:1.85; color:#334155 !important; }
 
 [data-testid="stTextInput"] input,
 [data-testid="stSelectbox"] select,
-[data-testid="stTextArea"] textarea {{
-    background:{input_bg} !important; border:1.5px solid {input_border} !important;
-    border-radius:8px !important; color:{input_txt} !important;
+[data-testid="stTextArea"] textarea {
+    background:#ffffff !important; border:1.5px solid #d1d9f0 !important;
+    border-radius:8px !important; color:#0f172a !important;
     font-family:'Noto Sans KR',sans-serif !important; font-size:14px !important;
-}}
+}
 [data-testid="stTextInput"] input:focus,
-[data-testid="stTextArea"] textarea:focus {{
-    border-color:{accent} !important;
-    box-shadow:0 0 0 3px rgba(37,99,235,0.12) !important;
-}}
+[data-testid="stTextArea"] textarea:focus {
+    border-color:#2563eb !important;
+    box-shadow:0 0 0 3px rgba(37,99,235,0.1) !important;
+}
 
-[data-testid="stButton"] button {{
-    background:{btn_grad} !important; color:white !important;
-    border:none !important; border-radius:9px !important;
+[data-testid="stButton"] button {
+    background:linear-gradient(135deg,#2563eb,#0ea5e9) !important;
+    color:white !important; border:none !important; border-radius:9px !important;
     font-weight:600 !important; font-family:'Noto Sans KR',sans-serif !important;
     font-size:14px !important; padding:0.55rem 1.5rem !important;
-    box-shadow:{btn_shadow} !important; transition:all 0.2s !important;
-}}
-[data-testid="stButton"] button:hover {{
+    box-shadow:0 4px 12px rgba(37,99,235,0.25) !important; transition:all 0.2s !important;
+}
+[data-testid="stButton"] button:hover {
     opacity:0.88 !important; transform:translateY(-1px) !important;
-}}
+}
 
-hr {{ border-color:{hr_color} !important; }}
+hr { border-color:#e8ecf4 !important; }
 
-[data-testid="stSuccess"] {{
-    background:{success_bg} !important; border:1px solid {success_border} !important; border-radius:8px !important;
-}}
-[data-testid="stWarning"] {{
-    background:{warn_bg} !important; border:1px solid {warn_border} !important; border-radius:8px !important;
-}}
+[data-testid="stSuccess"] {
+    background:#f0fdf4 !important; border:1px solid #86efac !important; border-radius:8px !important;
+}
+[data-testid="stWarning"] {
+    background:#fffbeb !important; border:1px solid #fcd34d !important; border-radius:8px !important;
+}
 
-[data-testid="stSelectbox"] > div > div {{
-    background:{input_bg} !important; border:1.5px solid {input_border} !important;
-    border-radius:8px !important; color:{input_txt} !important;
-}}
-[data-baseweb="popover"],[data-baseweb="menu"],ul[data-baseweb="menu"] {{
-    background:{pop_bg} !important; border:1px solid {pop_border} !important;
-    border-radius:10px !important; box-shadow:{pop_shadow} !important;
-}}
-[data-baseweb="menu"] li,[role="option"] {{
-    background:{pop_bg} !important; color:{pop_txt} !important;
+[data-testid="stSelectbox"] > div > div {
+    background:#ffffff !important; border:1.5px solid #d1d9f0 !important;
+    border-radius:8px !important; color:#0f172a !important;
+}
+[data-baseweb="popover"],[data-baseweb="menu"],ul[data-baseweb="menu"] {
+    background:#ffffff !important; border:1px solid #e2e6f0 !important;
+    border-radius:10px !important; box-shadow:0 8px 32px rgba(0,0,0,0.12) !important;
+}
+[data-baseweb="menu"] li,[role="option"] {
+    background:#ffffff !important; color:#1a2036 !important;
     font-family:'Noto Sans KR',sans-serif !important; font-size:13px !important;
-}}
-[data-baseweb="menu"] li:hover,[role="option"]:hover {{
-    background:{pop_hover_bg} !important; color:{pop_hover_txt} !important;
-}}
-[aria-selected="true"] {{
-    background:{pop_sel_bg} !important; color:{pop_sel_txt} !important; font-weight:600 !important;
-}}
+}
+[data-baseweb="menu"] li:hover,[role="option"]:hover {
+    background:#eff4ff !important; color:#2563eb !important;
+}
+[aria-selected="true"] {
+    background:#dbeafe !important; color:#1d4ed8 !important; font-weight:600 !important;
+}
 
-[data-testid="stWidgetLabel"] p {{
+[data-testid="stWidgetLabel"] p {
     font-size:11px !important; font-weight:700 !important;
     letter-spacing:0.06em !important; text-transform:uppercase !important;
-    color:{lbl_color} !important;
-}}
-[data-testid="stSpinner"] {{ color:{accent} !important; }}
+    color:#64748b !important;
+}
+[data-testid="stSpinner"] { color:#2563eb !important; }
 
-[data-testid="stSidebar"] * {{ color:{txt}; }}
-[data-testid="stSidebar"] input {{
-    background:{sidebar_input} !important; border:1.5px solid {input_border} !important;
-    color:{input_txt} !important; border-radius:8px !important;
-}}
+[data-testid="stSidebar"] * { color:#1a2036; }
+[data-testid="stSidebar"] input {
+    background:#f8faff !important; border:1.5px solid #d1d9f0 !important;
+    color:#0f172a !important; border-radius:8px !important;
+}
 
-/* 사이드바 << >> 접기/펼치기 버튼 */
-[data-testid="stSidebarCollapsedControl"] {{
-    background: {"rgba(255,255,255,0.06)" if dark else "#ffffff"} !important;
-    border: 1px solid {border} !important;
+/* 사이드바 << >> 접기/펼치기 버튼 — 라이트 모드 */
+[data-testid="stSidebarCollapsedControl"] {
+    background: #ffffff !important;
+    border: 1px solid #e2e6f0 !important;
     border-radius: 0 8px 8px 0 !important;
-    box-shadow: 2px 0 8px rgba(0,0,0,{"0.3" if dark else "0.08"}) !important;
-}}
+    box-shadow: 2px 0 8px rgba(0,0,0,0.08) !important;
+}
 [data-testid="stSidebarCollapsedControl"] button,
-[data-testid="stSidebarCollapsedControl"] svg {{
-    color: {"#dde2f0" if dark else "#0f172a"} !important;
-    fill: {"#dde2f0" if dark else "#0f172a"} !important;
-}}
-button[data-testid="baseButton-headerNoPadding"] svg {{
-    color: {"#dde2f0" if dark else "#1a2036"} !important;
-    fill: {"#dde2f0" if dark else "#1a2036"} !important;
-}}
-
-/* 토글 버튼만 별도 스타일 */
-.toggle-btn button {{
-    background: transparent !important;
-    border: 1.5px solid {border2} !important;
-    color: {txt} !important;
-    box-shadow: none !important;
-    font-size: 12px !important;
-    padding: 0.3rem 0.9rem !important;
-    border-radius: 20px !important;
-}}
-.toggle-btn button:hover {{
-    border-color: {accent} !important;
-    color: {accent} !important;
-    transform: none !important;
-}}
+[data-testid="stSidebarCollapsedControl"] svg {
+    color: #0f172a !important;
+    fill: #0f172a !important;
+}
+button[data-testid="baseButton-headerNoPadding"] svg {
+    color: #1a2036 !important;
+    fill: #1a2036 !important;
+}
 </style>
 """, unsafe_allow_html=True)
-
-    return toggle_icon, toggle_label
-
-# 테마 적용
-toggle_icon, toggle_label = apply_theme(st.session_state.dark_mode)
 
 
 # ─────────────────────────────────────────
@@ -433,44 +315,9 @@ if "manager_id" not in st.session_state or not st.session_state.get("_mgr_entere
 #  사이드바 — 관리자 로그인 + 직원 선택
 # ─────────────────────────────────────────
 with st.sidebar:
-    # ── 테마 토글 (사이드바 상단) ──
-    _dark = st.session_state.dark_mode
-    _toggle_label = "☀️  라이트 모드" if _dark else "🌙  다크 모드"
-    _t_bg    = "rgba(255,255,255,0.06)" if _dark else "rgba(0,0,0,0.04)"
-    _t_bdr   = "rgba(255,255,255,0.12)" if _dark else "#d1d9f0"
-    _t_txt   = "#8ba0c0"                if _dark else "#64748b"
-    st.markdown(f"""
-    <style>
-    div[data-testid="stSidebar"] div[data-testid="stButton"]:first-of-type button {{
-        background: {_t_bg} !important;
-        border: 1px solid {_t_bdr} !important;
-        color: {_t_txt} !important;
-        box-shadow: none !important;
-        font-size: 12px !important;
-        font-weight: 500 !important;
-        padding: 0.35rem 1rem !important;
-        border-radius: 20px !important;
-        width: auto !important;
-    }}
-    div[data-testid="stSidebar"] div[data-testid="stButton"]:first-of-type button:hover {{
-        border-color: {"rgba(0,200,224,0.4)" if _dark else "#2563eb"} !important;
-        color: {"#00c8e0" if _dark else "#2563eb"} !important;
-        transform: none !important;
-        box-shadow: none !important;
-    }}
-    </style>
-    """, unsafe_allow_html=True)
-    if st.button(_toggle_label, key="theme_toggle"):
-        st.session_state.dark_mode = not st.session_state.dark_mode
-        st.rerun()
-
-    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
-
-    # 모바일 안내 — 사이드바 상단 타이틀만 남김
-    st.markdown(f"""
+    st.markdown("""
     <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;
-                text-transform:uppercase;color:{'#3d7fff' if _dark else '#2563eb'};
-                margin-bottom:16px;">
+                text-transform:uppercase;color:#2563eb;margin-bottom:16px;">
         관리자 접속
     </div>
     """, unsafe_allow_html=True)
@@ -482,12 +329,10 @@ with st.sidebar:
     )
 
     if not manager_id:
-        st.markdown(f"""
-        <div style="margin-top:8px;padding:12px;
-                    background:{'rgba(61,127,255,0.06)' if _dark else '#eff6ff'};
-                    border:1px solid {'rgba(61,127,255,0.15)' if _dark else '#bfdbfe'};
-                    border-radius:8px;font-size:12px;
-                    color:{'#5a6480' if _dark else '#3b5bdb'};line-height:1.7;">
+        st.markdown("""
+        <div style="margin-top:8px;padding:12px;background:#eff6ff;
+                    border:1px solid #bfdbfe;border-radius:8px;
+                    font-size:12px;color:#3b5bdb;line-height:1.7;">
             사번을 입력하면 담당 직원 목록이 나타납니다
         </div>
         """, unsafe_allow_html=True)
@@ -518,21 +363,17 @@ with st.sidebar:
             last_date = emp_interviews_all["INTERVIEWDATE"].max()
             last_date_str = last_date.strftime("%Y.%m.%d") if pd.notna(last_date) else "기록 없음"
 
-            _qs_bg  = "rgba(0,200,224,0.05)" if _dark else "#f0f9ff"
-            _qs_bdr = "rgba(0,200,224,0.12)" if _dark else "#bae6fd"
-            _qs_lbl = "#4a5570"              if _dark else "#64748b"
-            _qs_val = "#00c8e0"              if _dark else "#0369a1"
             st.markdown(f"""
-            <div style="margin-top:16px;padding:14px;background:{_qs_bg};
-                        border:1px solid {_qs_bdr};border-radius:8px;">
-                <div style="font-size:10px;color:{_qs_lbl};margin-bottom:6px;
+            <div style="margin-top:16px;padding:14px;background:#f0f9ff;
+                        border:1px solid #bae6fd;border-radius:8px;">
+                <div style="font-size:10px;color:#64748b;margin-bottom:6px;
                             font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">
                     최근 면담
                 </div>
-                <div style="font-family:'DM Mono',monospace;font-size:13px;color:{_qs_val};font-weight:600;">
+                <div style="font-family:'DM Mono',monospace;font-size:13px;color:#0369a1;font-weight:600;">
                     {last_date_str}
                 </div>
-                <div style="font-size:11px;color:{_qs_lbl};margin-top:4px;">
+                <div style="font-size:11px;color:#64748b;margin-top:4px;">
                     총 {len(emp_interviews_all)}회 면담 기록
                 </div>
             </div>
@@ -540,20 +381,14 @@ with st.sidebar:
 
 # ── 사이드바 밖: manager_id 없으면 온보딩 카드 표시 후 중단 ──
 if not manager_id:
-    dark = st.session_state.dark_mode
-    card_bg  = "#0d1117" if dark else "#ffffff"
-    card_bdr = "rgba(61,127,255,0.2)" if dark else "#bfcfff"
-    title_c  = "#dde2f0" if dark else "#0f172a"
-    sub_c    = "#5a6480" if dark else "#64748b"
-    st.markdown(f"""
+    st.markdown("""
     <div style="margin-top:60px;text-align:center;padding:60px 24px;
-                background:{card_bg};border:1.5px dashed {card_bdr};
-                border-radius:16px;">
+                background:#ffffff;border:1.5px dashed #bfcfff;border-radius:16px;">
         <div style="font-size:44px;margin-bottom:16px;">🤝</div>
-        <div style="font-size:20px;font-weight:700;color:{title_c};margin-bottom:10px;">
+        <div style="font-size:20px;font-weight:700;color:#0f172a;margin-bottom:10px;">
             AI 1on1 면담 코치
         </div>
-        <div style="font-size:14px;color:{sub_c};line-height:1.8;">
+        <div style="font-size:14px;color:#64748b;line-height:1.8;">
             왼쪽 메뉴에서 <b>관리자 사번</b>을 입력하면<br>시작할 수 있습니다
         </div>
     </div>
