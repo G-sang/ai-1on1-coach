@@ -419,7 +419,12 @@ def parse_coaching(text):
 # ─────────────────────────────────────────
 #  UI 시작
 # ─────────────────────────────────────────
-st.set_page_config(page_title="1on1 면담 코치", layout="wide", page_icon="🤝")
+st.set_page_config(
+    page_title="1on1 면담 코치",
+    layout="wide",
+    page_icon="🤝",
+    initial_sidebar_state="expanded"
+)
  
 # 헤더
 st.markdown("""
@@ -440,6 +445,11 @@ try:
 except Exception as e:
     st.error(f"데이터 연결 실패: {e}")
     st.stop()
+ 
+# ── 관리자 ID 없을 때 본문 온보딩 안내 ──
+# (사이드바가 닫혀있는 모바일 사용자를 위해)
+if "manager_id" not in st.session_state or not st.session_state.get("_mgr_entered", False):
+    pass  # 아래 사이드바 처리 후 분기
  
 # ─────────────────────────────────────────
 #  사이드바 — 관리자 로그인 + 직원 선택
@@ -480,6 +490,33 @@ with st.sidebar:
             위 칸에 <b style="color:#3d7fff;">관리자 사번</b>을 입력하면<br>
             담당 직원 목록이 나타납니다.<br><br>
             <span style="color:#3a4560;font-size:11px;">예) 1, 2, 3 ...</span>
+        </div>
+        """, unsafe_allow_html=True)
+ 
+        # 본문에도 안내 (모바일에서 사이드바 닫혀있을 때 대비)
+        st.markdown("""
+        <div style="margin-top:40px;text-align:center;padding:48px 24px;
+                    background:#0d1117;border:1px dashed rgba(61,127,255,0.2);
+                    border-radius:16px;">
+            <div style="font-size:36px;margin-bottom:16px;">🤝</div>
+            <div style="font-size:18px;font-weight:700;color:#dde2f0;margin-bottom:8px;">
+                AI 1on1 면담 코치
+            </div>
+            <div style="font-size:13px;color:#5a6480;margin-bottom:28px;line-height:1.7;">
+                관리자 사번을 입력하고 시작하세요
+            </div>
+            <div style="display:inline-flex;align-items:center;gap:8px;
+                        padding:12px 24px;
+                        background:rgba(61,127,255,0.1);
+                        border:1px solid rgba(61,127,255,0.3);
+                        border-radius:10px;
+                        font-size:13px;color:#3d7fff;font-weight:600;">
+                <span style="font-size:18px;">◀</span>
+                왼쪽 메뉴에서 관리자 사번 입력
+            </div>
+            <div style="margin-top:16px;font-size:11px;color:#3a4560;">
+                📱 모바일: 상단 왼쪽 <b style="color:#5a6480;">&gt;&gt;</b> 버튼을 먼저 누르세요
+            </div>
         </div>
         """, unsafe_allow_html=True)
         st.stop()
@@ -655,4 +692,3 @@ with col_right:
             ])
             st.cache_data.clear()
             st.success("✓  면담 결과가 저장되었습니다.")
- 
