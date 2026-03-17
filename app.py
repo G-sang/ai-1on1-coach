@@ -13,12 +13,12 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap');
 
 html, body, [data-testid="stAppViewContainer"] {
-    background-color: #f4f6fb !important;
+    background-color: #e8edf5 !important;
     font-family: 'Noto Sans KR', sans-serif !important;
 }
 [data-testid="stHeader"] {
-    background-color: #f4f6fb !important;
-    border-bottom: 1px solid #e2e6f0 !important;
+    background-color: #e8edf5 !important;
+    border-bottom: 1px solid #d0d7e8 !important;
 }
 [data-testid="stSidebar"] {
     background-color: #ffffff !important;
@@ -298,7 +298,7 @@ st.set_page_config(
     page_title="1on1 면담 코치",
     layout="wide",
     page_icon="🤝",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="auto"
 )
 
 # 헤더 — 토글 없이 단순하게
@@ -415,10 +415,10 @@ if not manager_id:
                     border-radius:12px;
                     box-shadow:0 4px 14px rgba(0,0,0,0.2);
                     letter-spacing:0.02em;">
-            ☰ &nbsp;왼쪽 위 버튼 눌러서 사번 입력
+            👈 &nbsp;왼쪽 메뉴에서 사번 입력
         </div>
         <div style="margin-top:16px;font-size:12px;color:#94a3b8;">
-            PC는 왼쪽 사이드바에서 바로 입력 가능합니다
+            메뉴가 안 보이면 화면을 왼쪽으로 밀어보세요
         </div>
     </div>
     """, unsafe_allow_html=True)
